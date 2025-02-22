@@ -10,8 +10,8 @@ This project implements the fine-tuning of various **Large Language Models (LLMs
 
 ## Notebooks
 ### 1️⃣ Fine-Tuning DistilBERT for Text Classification
-📌 **Notebook:** `fine_tuning_distilbert_for_text_classification.ipynb`
-- Uses **DistilBERT**, a lightweight version of BERT, for multi-class classification.
+📌 **Notebook:** `fine_tuning_distilbert_for_products_classification.ipynb`
+- Uses **DistilBERT**, a lightweight version of BERT, for binary classification.
 - Prepares datasets and tokenizes text for training.
 - Implements **quantization** and **optimized training techniques** to reduce memory consumption.
 - Evaluates model accuracy and inference performance using standard metrics like accuracy.
@@ -31,7 +31,7 @@ This project implements the fine-tuning of various **Large Language Models (LLMs
 - Generates high-quality, meaningful responses based on contextual input.
 
 ### 4️⃣ Fine-Tuning LLM for Text Generation using Unsloth
-📌 **Notebook:** `fine_tuning_llm_text_classification_unsloth.ipynb`
+📌 **Notebook:** `fine_tuning_llm_for_text_generation_ unsloth.ipynb`
 - Utilizes **Unsloth**, an optimized version of LLaMA, for **high-speed fine-tuning**.
 - Performs **dataset preparation, tokenization, and training** using efficient memory management techniques.
 - Optimizes model efficiency with **quantization, mixed-precision (FP16) computation, and low-rank adaptation (LoRA)**.
