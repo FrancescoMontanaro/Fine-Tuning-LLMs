@@ -14,3 +14,4 @@ kagglehub
 matplotlib
 python-dotenv
 unsloth
+seaborn
