@@ -1,47 +1,86 @@
-# Fine-Tuning Large Language Models (LLMs)
+# Fine-Tuning Large Language Models
 
 ## Overview
-This project implements the fine-tuning of various **Large Language Models (LLMs)** for different NLP tasks, leveraging **Hugging Face Transformers** and efficient training techniques. The models are fine-tuned using **low-rank adaptation (LoRA), quantization**, and **accelerated training** to optimize resource usage.
+This repository collects hands-on experiments for adapting open-source large language models (LLMs) to downstream tasks. Each notebook walks through data preparation, training, evaluation, and inference while demonstrating different alignment strategies such as supervised fine-tuning (SFT), direct preference optimization (DPO), and online reinforcement learning (ORL). Hugging Face Transformers, PEFT/LoRA adapters, and lightweight generation utilities power the workflows.
 
-### Tasks Covered:
-- **Text Classification**: Fine-tuning **DistilBERT** and **Unsloth** for classification tasks.
-- **Spam Detection**: Training DistilBERT to classify spam vs. ham emails.
-- **Conditional Text Generation**: Fine-tuning **LLaMA** for generating context-aware text.
+The notebooks emphasize reproducible training scripts, modular helpers under `src/`, and lightweight storage of datasets and artifacts so experiments remain easy to rerun or extend.
 
-## Notebooks
-### 1️⃣ Fine-Tuning DistilBERT for Text Classification
-📌 **Notebook:** `fine_tuning_distilbert_for_products_classification.ipynb`
-- Uses **DistilBERT**, a lightweight version of BERT, for binary classification.
-- Prepares datasets and tokenizes text for training.
-- Implements **quantization** and **optimized training techniques** to reduce memory consumption.
-- Evaluates model accuracy and inference performance using standard metrics like accuracy.
+## Repository Layout
 
-### 2️⃣ Fine-Tuning DistilBERT for Spam Classification
-📌 **Notebook:** `fine_tuning_distilbert_for_spam_mails_classification.ipynb`
-- Fine-tunes **DistilBERT** on a real-world spam email detection dataset.
-- Implements **preprocessing, tokenization, and dataset transformation** for effective training.
-- Uses **Hugging Face Trainer API** for streamlined model fine-tuning and evaluation.
-- Saves the fine-tuned model, enabling efficient inference on new email samples.
+```text
+.
+├── datasets/                         # Local copies of datasets used by the notebooks
+├── notebooks/
+│   ├── supervised_fine_tuning/
+│   │   ├── sft_instruction_following.ipynb
+│   │   ├── sft_conditional_text_generation.ipynb
+│   │   ├── sft_emojis_translation.ipynb
+│   │   ├── sft_text_generation_unsloth.ipynb
+│   │   ├── sft_products_classification.ipynb
+│   │   └── sft_spam_mails_classification.ipynb
+│   ├── direct_preference_optimization/
+│   │   └── dpo_preference_alignment.ipynb
+│   └── online_reinforcement_learning/
+│       ├── orl_grpo_alignment.ipynb
+│       └── trainer_output/           # Run logs and checkpoints from GRPO experiments
+├── requirements.txt                  # Shared Python dependencies
+├── src/
+│   ├── __init__.py
+│   ├── data_processing.py            # Chat template builders and generation utilities
+│   ├── hf.py                         # Hugging Face model/tokenizer/dataset helpers
+│   └── utils.py                      # Miscellaneous helpers reused across notebooks
+└── venv/                             # Optional local virtual environment (ignored by git)
+```
 
-### 3️⃣ Fine-Tuning LLaMA for Conditional Text Generation
-📌 **Notebook:** `fine_tuning_llama_for_conditional_text_generation.ipynb`
-- Fine-tunes **LLaMA**, a powerful transformer model, for context-aware text generation.
-- Uses **LoRA-based fine-tuning** to optimize memory usage and allow efficient adaptation.
-- Implements **chat-like prompt formatting** to train the model for interactive and structured responses.
-- Generates high-quality, meaningful responses based on contextual input.
+## Notebook Catalogue
 
-### 4️⃣ Fine-Tuning LLM for Text Generation using Unsloth
-📌 **Notebook:** `fine_tuning_llm_for_text_generation_ unsloth.ipynb`
-- Utilizes **Unsloth**, an optimized version of LLaMA, for **high-speed fine-tuning**.
-- Performs **dataset preparation, tokenization, and training** using efficient memory management techniques.
-- Optimizes model efficiency with **quantization, mixed-precision (FP16) computation, and low-rank adaptation (LoRA)**.
-- Enables faster fine-tuning while maintaining high accuracy, reducing computational overhead.
+| Technique | Notebook | Key Topics |
+|-----------|----------|------------|
+| SFT | `sft_instruction_following.ipynb` | Instruction-following SFT with chat templates, LoRA adapters, and evaluation on dialogue-style prompts. |
+| SFT | `sft_conditional_text_generation.ipynb` | Conditional generation over scientific abstracts with prompt formatting, validation sampling, and optional adapter export. |
+| SFT | `sft_emojis_translation.ipynb` | Emoji ↔︎ natural language translation on a custom dataset, highlighting data curation and prompt engineering. |
+| SFT | `sft_text_generation_unsloth.ipynb` | Memory-efficient SFT using Unsloth, 4-bit quantization, gradient checkpointing, and fast HF integration. |
+| SFT | `sft_products_classification.ipynb` | Multi-class product title classification with scikit-learn metrics, confusion matrices, and dataset preprocessing. |
+| SFT | `sft_spam_mails_classification.ipynb` | Spam vs ham email detection using the Trainer API, quantization-ready setup, and evaluation utilities. |
+| DPO | `dpo_preference_alignment.ipynb` | Direct Preference Optimization workflow spanning dataset prep, reward modeling, and preference-aligned fine-tuning. |
+| ORL | `orl_grpo_alignment.ipynb` | Online reinforcement learning with GRPO (Grouped Reward Policy Optimization). |
 
-## Model Performance & Optimization
-- Uses **LoRA** (Low-Rank Adaptation) to make fine-tuning lightweight and efficient.
-- **Quantization** reduces model size while retaining performance, enabling deployment on smaller hardware.
-- **Trainer API** from Hugging Face provides structured fine-tuning with logging and evaluation.
-- **FP16 precision & BitsAndBytes optimization** speed up training while minimizing memory footprint.
+## Shared Utilities
 
-## Conclusion
-This project provides practical insights into **fine-tuning LLMs for real-world applications**, optimizing for **memory efficiency and computational performance** for many tasks such as: **classification, spam detection, or text generation**.
+- `src/data_processing.py` centralizes chat template construction, supervised signal masking, and generation helpers used across multiple notebooks.
+- `src/hf.py` offers wrappers for loading models, tokenizers, and datasets with consistent configuration and sensible defaults.
+- `src/utils.py` contains reusable utilities (seeding, logging, filesystem helpers) to keep notebooks focused on experimentation.
+
+Import the package either by adjusting `sys.path` inside notebooks or by installing it in editable mode:
+
+```bash
+pip install -e .
+```
+
+## Datasets & Artifacts
+
+- Place local or downloaded datasets under `datasets/`. Several notebooks expect CSV files such as `arxiv_dataset.csv` or `emoji_translation_dataset.csv` to reside here.
+- Training outputs (checkpoints, logs) from reinforcement learning runs currently live in `notebooks/online_reinforcement_learning/trainer_output/`. Consider moving long-lived artifacts under a dedicated `artifacts/` directory if storage grows.
+- Saved adapters or fine-tuned weights can be written to a `saved_models/` directory (not tracked by default) to keep the repository lightweight.
+
+## Environment Setup
+
+1. Create a virtual environment (Python 3.10+ recommended):
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+## Running the Notebooks
+
+- Launch Jupyter Lab/Notebook or VS Code, select the `fine-tuning-llms` kernel, and open the notebook of interest.
+- Follow the dataset preparation steps documented in each notebook; many cells load from `datasets/` or download sources via Hugging Face Hub.
+- When training, monitor GPU memory usage and adjust LoRA ranks, batch sizes, or quantization settings as demonstrated in the notebook templates.
