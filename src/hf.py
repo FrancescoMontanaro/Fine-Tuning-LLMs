@@ -1,5 +1,6 @@
 import os
 import dotenv
+from typing import Optional
 from pandas import DataFrame
 from functools import lru_cache
 from huggingface_hub import login
@@ -20,6 +21,7 @@ def hf_login() -> None:
     Authenticate with Hugging Face using a token stored in environment variables.
     """
 
+    # Ensure environment variables are loaded
     _load_env()
 
     # Extract the hugging face token from the user data
@@ -37,7 +39,7 @@ def hf_login() -> None:
     print("Successfully logged in to Hugging Face!")
     
     
-def load_hf_dataset(dataset_name: str, split: str = 'train') -> Dataset:
+def load_hf_dataset(dataset_name: str, split: str = 'train', config_name: Optional[str] = None) -> Dataset:
     """
     Load a dataset from Hugging Face Hub.
 
@@ -48,10 +50,12 @@ def load_hf_dataset(dataset_name: str, split: str = 'train') -> Dataset:
     Returns:
         Dataset: The loaded dataset.
     """
+    
+    # Ensure environment variables are loaded
     _load_env()
         
     # Load the dataset from Hugging Face Hub
-    dataset = load_dataset(dataset_name, split=split)
+    dataset = load_dataset(dataset_name, split=split, name=config_name)
     
     # Verify that the dataset is of type Dataset
     if not isinstance(dataset, Dataset):

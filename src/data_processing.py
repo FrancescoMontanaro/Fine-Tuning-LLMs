@@ -80,11 +80,12 @@ def build_chat(
 def generate_response(
     model, 
     tokenizer,
-    user_message: str, 
+    user_message: str = "", 
     system_message: Optional[str] = None,
     max_new_tokens: int = 256,
     stream: bool = False,
     enable_thinking:  bool = False,
+    full_message: Optional[list[dict]] = None,
     **kwargs
 ) -> str:
     """
@@ -98,16 +99,22 @@ def generate_response(
         max_new_tokens (int): The maximum number of new tokens to generate.
         stream (bool): Whether to stream the output (not implemented in this function).
         enable_thinking (bool): Whether to enable "thinking" mode in the chat template.
+        full_message (Optional[list[dict]]): An optional full message to use instead of building from user/system messages.
         
     Returns:
         str: The generated response from the model.
     """
     
-    # Format chat using tokenizer's chat template
-    messages = []
-    if system_message:
-        messages.append({"role": "system", "content": system_message})
-    messages.append({"role": "user", "content": user_message})
+    # Use full_message if provided
+    if full_message is not None:
+        # Use the provided full message directly
+        messages = full_message
+    else:
+        # Format chat using tokenizer's chat template
+        messages = []
+        if system_message:
+            messages.append({"role": "system", "content": system_message})
+        messages.append({"role": "user", "content": user_message})
         
     # Build the prompt using the chat template
     prompt = tokenizer.apply_chat_template(
