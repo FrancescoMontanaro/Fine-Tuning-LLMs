@@ -1,4 +1,3 @@
-import os
 import torch
 from typing import Optional
 from transformers import TextStreamer
@@ -28,12 +27,13 @@ def build_chat(
     """
     
     # Build the chat conversation
-    system_prompt = {"role": "system", "content": system_text} if system_text else ""
-    user_prompt = {"role": "user", "content": user_text}
-    assistant_response = {"role": "assistant", "content": answer_text}
-    
-    # Create the full conversation
-    conversation = [system_prompt, user_prompt, assistant_response]
+    prompts = [
+        {"role": "system", "content": system_text} if system_text else None,
+        {"role": "user", "content": user_text},
+        {"role": "assistant", "content": answer_text},
+    ]
+
+    conversation = [prompt for prompt in prompts if prompt]
     
     # Apply the chat template to full conversation
     full_text = tokenizer.apply_chat_template(
@@ -45,7 +45,7 @@ def build_chat(
     )
     
     # Build prompt only
-    prompt_only = [system_prompt, user_prompt]
+    prompt_only = [prompt for prompt in prompts[:2] if prompt]
     prompt_ids = tokenizer.apply_chat_template(
         prompt_only, 
         add_generation_prompt = True,
